@@ -1,0 +1,13 @@
+# Python cache
+**/__pycache__/
+**/*.py[cod]
+
+# Database bestanden
+project/*.db
+
+# Virtual environment in project/ map
+project/venv/
+project/.venv/
+
+# Environment file
+project/config/.env
