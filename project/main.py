@@ -34,8 +34,8 @@ def main():
 
         try:
             keuze = int(input('Maak een keuze:\n'))
-        except ValueError as v:
-            print(f'Foutieve ingave: {v}')
+        except ValueError:
+            print('Foutieve ingave: kies een cijfer uit het keuzemenu.')
             continue
 
         if keuze == 1:
@@ -59,28 +59,44 @@ def main():
         elif keuze == 3:
             df_klant = pd.read_sql_query('SELECT * from customers', conn)
             print(df_klant[['customerID', 'first_name', 'last_name']])
-            keuze_klant = int(
-                input('\nGeef het klantID in om de klant te selecteren:\n'))
+            while True:
+                try:
+                    keuze_klant = int(input('\nGeef het customerID in om de klant te selecteren:\n'))
+                    if keuze_klant in df_klant['customerID'].values:
+                        break
+                    else:
+                        print('\nOngeldig customerID, selecteer een ID uit de lijst.')
+                except ValueError:
+                    print('\nGeef een geldig getal in.')
+                    
             df_car = pd.read_sql_query('SELECT * from cars', conn)
             print(df_car[['carID', 'brand', 'model']])
-            keuze_auto = int(
-                input('\nGeef het carID om de auto te selecteren:\n'))
-        
+            while True:
+                try:
+                    keuze_auto = int(input('\nGeef het carID om de auto te selecteren:\n'))
+                    if keuze_auto in df_car['carID'].values:
+                        break
+                    else:
+                        print('Ongeldig carID, selecteer een ID uit de lijst.')
+                except ValueError:
+                    print('\nVoer een geldig getal in.')
+                    
             while True:
                 start_datum = input('Geef de startdatum van het verhuur: (DD-MM-YY)\n')
                 try:
                     start_datum = datetime.strptime(start_datum, '%d-%m-%y').date()
                     break
                 except ValueError:
-                    print(f'Foutieve ingave: geef het formaat (DD-MM-YY)')
+                    print('\nFoutieve ingave: geef het formaat (DD-MM-YY)')
             
             while True:
-                eind_datum = input('Geef de einddatum van het verhuur: (DD-MM-YY)\n')
+                eind_datum = input('\nGeef de einddatum van het verhuur: (DD-MM-YY)\n')
                 try:
                     eind_datum = datetime.strptime(eind_datum, '%d-%m-%y').date()
                     break
                 except ValueError:
-                    print(f'Foutieve ingave: geef het formaat (DD-MM-YY)')
+                    print('\nFoutieve ingave: geef het formaat (DD-MM-YY)')
+                    
             aantal_dagen = (eind_datum - start_datum).days
             cur = conn.cursor()
             cur.execute("SELECT price FROM Cars WHERE carID = ?", (keuze_auto,))
@@ -90,7 +106,7 @@ def main():
             verhuur = Autoverhuur(keuze_klant, keuze_auto, start_datum, eind_datum, totaal_prijs)
             verhuur.voeg_verhuur_toe(conn)
             print('\n--------------------------\n')
-            print(f'Prijs voor het verhuur: € {totaal_prijs}\n')
+            print(f'Verhuur werd geregistreerd.\nPrijs voor het verhuur: € {totaal_prijs}\n')
         elif keuze == 6:
             break
         
