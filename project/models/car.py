@@ -25,8 +25,7 @@ class Car:
                           self._license_plate, self._price)
             cur.execute(query, parameters)
             conn.commit()
-            print(f'{self._brand} {self._model} met nummerplaat {
-                  self._license_plate} is toegevoegd.')
+            print(f'\n{self._brand} {self._model} met nummerplaat {self._license_plate} is toegevoegd.\n')
         except Exception as e:
             print(f'Fout bij het toevoegen van de auto: {e}')
             

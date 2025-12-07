@@ -24,7 +24,7 @@ class Customer:
                           self._mail, self._phone, self._address)
             cur.execute(query, parameters)
             conn.commit()
-            print(f'Klant {self._first_name} {self._last_name} werd toegevoegd.')
+            print(f'\nKlant {self._first_name} {self._last_name} werd toegevoegd.\n')
         except Exception as e:
             print(f'Fout bij het toevoegen van de klant: {e}')
 

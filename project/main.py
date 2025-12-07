@@ -13,13 +13,25 @@ from models.car import Car
 from models.customer import Customer
 from models.autoverhuur import Autoverhuur
 from datetime import datetime
-
+import os
 
 def main():
     try:
         conn = db_connectie()
     except Error as e:
         print(f'Fout bij het connecteren met de database: {e}')
+        
+    huidig_pad = os.path.abspath(os.getcwd())
+    excel_map = os.path.join(huidig_pad, "Excel_reports") 
+    if not os.path.exists(excel_map):
+        os.mkdir(excel_map)
+    else:
+        pass
+    csv_map = os.path.join(huidig_pad, "Csv_reports")
+    if not os.path.exists(csv_map):
+        os.mkdir(csv_map)
+    else:
+        pass
 
     while True:
 
@@ -107,6 +119,12 @@ def main():
             verhuur.voeg_verhuur_toe(conn)
             print('\n--------------------------\n')
             print(f'Verhuur werd geregistreerd.\nPrijs voor het verhuur: € {totaal_prijs}\n')
+        
+        elif keuze == 4:
+            bestandsnaam_excel = input('Geef de bestandsnaam van het rapport:\n').strip()
+            excel_file = os.path.join(excel_map, f"{bestandsnaam_excel}.xlsx")
+            Autoverhuur.excel_verhuur(conn, excel_file)
+        
         elif keuze == 6:
             break
         

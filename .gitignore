@@ -11,3 +11,10 @@ project/.venv/
 
 # Environment file
 project/config/.env
+
+
+/project/**/*.xlsx
+/project/**/*.xls
+/project/**/*.csv
+/project/excel/
+/project/csv/
