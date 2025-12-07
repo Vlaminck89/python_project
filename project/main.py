@@ -40,8 +40,8 @@ def main():
         print('1. Voeg klant toe')
         print('2. Voeg auto toe')
         print('3. Autoverhuur toevoegen')
-        print('4. Rapport verhuur to_csv')
-        print('5. Rapport verhuur to_excel')
+        print('4. Rapport verhuur to_excel')
+        print('5. Rapport verhuur to_csv')
         print('6. Stop programma')
 
         try:
@@ -121,10 +121,21 @@ def main():
             print(f'Verhuur werd geregistreerd.\nPrijs voor het verhuur: € {totaal_prijs}\n')
         
         elif keuze == 4:
-            bestandsnaam_excel = input('Geef de bestandsnaam van het rapport:\n').strip()
-            excel_file = os.path.join(excel_map, f"{bestandsnaam_excel}.xlsx")
+            bestandsnaam = input('Geef de bestandsnaam van het rapport:\n').strip()
+            bestandsnaam_excel= f"{bestandsnaam}.xlsx"
+            excel_file = os.path.join(excel_map, bestandsnaam_excel)
             Autoverhuur.excel_verhuur(conn, excel_file)
-        
+            pad= os.path.abspath(os.getcwd())
+            print(f'\n{bestandsnaam_excel} is terug te vinden in de map excel in {pad}\n')
+            
+        elif keuze == 5:
+            bestandsnaam= input('Geef de bestandsnaam van het rapport:\n').strip()
+            bestandsnaam_csv= f"{bestandsnaam}.csv"
+            csv_file = os.path.join(csv_map, bestandsnaam_csv)
+            Autoverhuur.csv_verhuur(conn, csv_file)
+            pad= os.path.abspath(os.getcwd())
+            print(f'\n{bestandsnaam_csv} is terug te vinden in de map excel in {pad}\n')
+            
         elif keuze == 6:
             break
         

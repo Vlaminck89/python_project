@@ -31,28 +31,53 @@ class Autoverhuur:
         except Exception as e:
             print(f'Fout bij het toevoegen van de verhuur: {e}')
     
-    # @classmethod
-    # def bestandsnaam_vragen(cls):
-    #     huidig_pad = os.path.abspath(os.getcwd())
-    #     print(huidig_pad)
-    #     print(type(huidig_pad))
-        
-    @staticmethod
-    def excel_verhuur(conn, excel_file):
+    def get_rentals(conn):
+       try:
+           query = '''
+           SELECT * FROM Rentals
+           INNER JOIN Cars USING (carID)
+           INNER JOIN Customers USING (customerID);
+           '''
+           df = pd.read_sql_query(query, conn)
+           rentals = df[["rentalID", "carID", "brand", "model", "year", "license_plate",
+                         "total_price", "customerID", "first_name", "last_name"]]
+           return rentals
+       except Exception as e:
+           print(f'Fout bij het opvragen van de query: {e}')
+    
+    def get_opbrengst_per_klant(conn):
         try:
-            query = '''
+            query= '''
             select * from Rentals
-            inner join cars USING (carID)
             inner join Customers using (customerID);
             '''
             df = pd.read_sql_query(query, conn)
-            rentals = df[["rentalID", "carID", "brand", "model", "year", "license_plate",
-                          "total_price", "customerID", "first_name", "last_name"]]
-            with pd.ExcelWriter(excel_file) as writer:
-                rentals.to_excel(excel_writer=writer, sheet_name='Huurovereenkomsten', index=False)
+            opbrengst = df[["customerID", "first_name", "last_name", "total_price"]]
+            opbrengst_per_klant = opbrengst.groupby(["customerID", "first_name", "last_name"], as_index= False)["total_price"].sum()
+            opbrengst_per_klant = opbrengst_per_klant.sort_values(by= "total_price", ascending= False)
+            return opbrengst_per_klant
         except Exception as e:
             print(f'Fout bij het opvragen van de query: {e}')
-
+            
+    @staticmethod
+    def excel_verhuur(conn, excel_file):
+        try:
+            rentals = Autoverhuur.get_rentals(conn)
+            opbrengst_per_klant = Autoverhuur.get_opbrengst_per_klant(conn)
+            with pd.ExcelWriter(excel_file) as writer:
+                rentals.to_excel(excel_writer= writer, sheet_name='Huurovereenkomsten', index=False)
+                opbrengst_per_klant.to_excel(excel_writer= writer, sheet_name='Opbrengst per klant', index= False)
+        except Exception as e:
+            print(f'Fout bij het opvragen van de query: {e}')
+            
+    @staticmethod
+    def csv_verhuur(conn, csv_file):
+        try:
+            rentals = Autoverhuur.get_rentals(conn)
+            rentals.to_csv(csv_file, index= False)
+        except Exception as e:
+            print(f'Fout bij het opvragen van de query: {e}')
+            
 # if __name__ == '__main__':
 #     # Autoverhuur.bestandsnaam_vragen()
     
