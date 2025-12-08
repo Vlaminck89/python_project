@@ -6,7 +6,6 @@ Created on Fri Dec  5 11:16:29 2025
 """
 
 import pandas as pd
-import sqlite3
 from sqlite3 import Error
 from service.service import db_connectie
 from models.car import Car
